@@ -3,6 +3,19 @@ browsenpm.org
 
 Browse packages, users, code, stats and more the public npm registry in style.
 
+Docker Container
+============
+
+Running this on a container is as simple as the following:
+
+```
+$ docker run -t -i -p 8181:80 --link npm-registry:couchdb --link redis:redis --link npm-registry:private_npm marcellodesales/browse-npm
+```
+
+* couchdb: a running couchdb container running with the default ports
+* redis: a running redis container running with the default ports
+* private_npm: a running private npm container.
+
 ### Installation
 
 Browsenpm.org has several dependencies to run locally for development purposes.

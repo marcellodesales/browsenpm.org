@@ -1,23 +1,22 @@
 {
-  "port": 8081,
+  "port": 80,
   "tokens": [],
-  "registry": "https://registry.nodejitsu.com/",
+  "registry": process.env.PRIVATE_NPM_PORT_80_TCP.replace("tcp", "http"),
   "probes": [
     "ping",
     "delta"
   ],
   "service": "browsenpm",
   "redis": {
-    "host": "localhost",
-    "port": 6379
+    "host": process.env.REDIS_PORT_6379_TCP_ADDR,
+    "port": parseInt(process.env.REDIS_PORT_6379_TCP_PORT)
   },
   "couchdb": {
     "database": "browsenpm",
-    "auth": "nj:nj123123",
-    "host": "localhost",
-    "port": 5984
+    "host": process.env.COUCHDB_PORT_5984_TCP_ADDR,
+    "port": process.env.COUCHDB_PORT_5984_TCP_PORT
   },
   "npm": {
-    "loglevel": "silent"
+    "loglevel": "debug"
   }
 }
