@@ -6,19 +6,20 @@ MAINTAINER Marcello_deSales@intuit.com
 # but allow it to be mounted from outside
 # Custom versions FTW
 
-VOLUME /runtime
+RUN apt-get install -y git
+
+# use changes to package.json to force Docker not to use the cache
+# when we change our application's nodejs dependencies:
+ADD package.json /tmp/package.json
+RUN cd /tmp && npm install
+RUN mkdir -p /runtime && cp -a /tmp/node_modules /runtime
+
+WORKDIR /runtime 
 
 ADD . /runtime
 
-# Create workspace
-# And bind it to the site folder at runtime
-WORKDIR /runtime
-
 EXPOSE 80
-
-RUN apt-get install -y git
-
-RUN npm install
+VOLUME /runtime
 
 # init npm couchapp
-CMD ["bin/server -c confi.json"]
+CMD ["bin/server", "-c config.json"]
