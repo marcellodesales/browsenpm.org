@@ -14,6 +14,9 @@ module.exports = {
   },
   "couchdb": {
     "database": "browsenpm",
+    "auth": process.env.COUCHDB_ENV_COUCHDB_ADMIN_LOGIN && process.env.COUCHDB_ENV_COUCHDB_ADMIN_PASSWORD ? 
+              process.env.COUCHDB_ENV_COUCHDB_ADMIN_LOGIN + ":" + process.env.COUCHDB_ENV_COUCHDB_ADMIN_PASSWORD :
+              "nj:nj123123",
     "host": process.env.COUCHDB_PORT_5984_TCP_ADDR || "localhost",
     "port": process.env.COUCHDB_PORT_5984_TCP_PORT && parseInt(process.env.COUCHDB_PORT_5984_TCP_PORT) || 5984
   },
