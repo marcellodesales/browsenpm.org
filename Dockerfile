@@ -22,4 +22,4 @@ EXPOSE 80
 VOLUME /runtime
 
 # init npm couchapp
-CMD ["bin/server", "-c config.json"]
+CMD ["bin/server"]

@@ -1,6 +1,7 @@
 'use strict';
 
 var nconf = require('nconf');
+var config = require('./settings');
 
 //
 // Most of the time you want to pass in a relative path to
@@ -27,6 +28,7 @@ nconf.argv(options).env();
  * @api private
  */
 function Configuration() {
+  nconf.defaults(config);
   //
   // Now load the file potentially passed in from
   // --config|-c
