@@ -3,12 +3,19 @@ browsenpm.org
 
 Browse packages, users, code, stats and more the public npm registry in style.
 
+Requirements
+===========
+
+This app must have Internet connection to Nodejitsu, NPM.org and other servers to be able to render packages information.
+
+Optionally, you can run all the depending sub-systems in Docker, as described below.
+
 Docker Container
 ============
 
 Running this on a container requires the following containers:
 
-* Redis: https://registry.hub.docker.com/\_/redis/
+* Redis: https://registry.hub.docker.com/_/redis/
 
 Based on the documentation, you can start it with persistence and storing the data in a desired volume.
 
@@ -22,21 +29,34 @@ This is running the NPM.org private registry, Kappa and CouchDB server. Again, y
 documentation and set the Couchdb credentials, expose port numbers, etc. 
 
 ```
-docker run --name='npm-registry' -i -t --rm -e 'COUCHDB_ADMIN_LOGIN=intuit' -e 'COUCHDB_ADMIN_PASSWORD=intuit' -p 5984:5984 -p 80:80 -v /app/npm-volume/:/var/lib/couchdb burkostya/npm-registry:2.5.5
+docker run --name='npm-registry' -d -e 'COUCHDB_ADMIN_LOGIN=intuit' -e 'COUCHDB_ADMIN_PASSWORD=intuit' -p 5984:5984 -p 80:80 -v /app/npm-volume/:/var/lib/couchdb burkostya/npm-registry:2.5.5
 ```
 
-Where the COUCHDB and volumen values are chosen randomly.
+Where the COUCHDB and volumen values are based in your environment.
 
 This app can start and link to those containers using the following command:
 
 ```
-$ docker run -t -i -p 8081:8081 --link npm-registry:couchdb --link redis:redis --link npm-registry:private_npm marcellodesales/browse-npm
+sudo docker run --name browsenpm-server -d -p 8081:8081 --link npm-registry:couchdb --link redis:redis --link npm-registry:private_npm marcellodesales/browse-npm
+035e83d07a7ff49a865a75f98ae072e14d41419e66075ca4b601c1663c3c4ecb
 ```
 
-* couchdb: a running couchdb container running with the default ports
-* redis: a running redis container running with the default ports
-* private\_npm: a running private npm container.
+After the server is running, you might have the following container running:
 
+```
+$ sudo docker ps
+CONTAINER ID        IMAGE                               COMMAND                CREATED             STATUS              PORTS                                        NAMES
+035e83d07a7f        marcellodesales/browse-npm:latest   bin/server             11 seconds ago      Up 2 seconds        80/tcp, 0.0.0.0:8081->8081/tcp               browsenpm-server                                                                                                                                                 
+cc93d42c8bbc        burkostya/npm-registry:2.5.5        /app/init app:start    26 minutes ago      Up 26 minutes       0.0.0.0:80->80/tcp, 0.0.0.0:5984->5984/tcp   browsenpm-server/couchdb,browsenpm-server/private_npm,grave_yonath/couchdb,grave_yonath/private_npm,jolly_carson/couchdb,jolly_carson/private_npm,npm-registry   
+3f129cde98c3        redis:latest                        redis-server --appen   37 minutes ago      Up 37 minutes       6379/tcp                                     browsenpm-server/redis,grave_yonath/redis,jolly_carson/redis,redis 
+```
+
+You can inspect the "browsenpm-server" container and make sure it is running:
+
+```
+$ sudo docker logs browsenpm-server
+Browsenpm.org is now running on http://localhost:8081
+```
 ### Installation
 
 Browsenpm.org has several dependencies to run locally for development purposes.
