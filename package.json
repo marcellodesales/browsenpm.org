@@ -53,6 +53,7 @@
     "redis": "0.12.x",
     "registry-status-pagelet": "0.4.x",
     "request": "2.40.x",
-    "sockjs": "0.3.x"
+    "sockjs": "0.3.x",
+    "stylus": "~0.42.3"
   }
 }
