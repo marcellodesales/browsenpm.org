@@ -18,7 +18,7 @@ WORKDIR /runtime
 
 ADD . /runtime
 
-EXPOSE 80
+EXPOSE 8081
 VOLUME /runtime
 
 # init npm couchapp

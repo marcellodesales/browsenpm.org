@@ -6,15 +6,36 @@ Browse packages, users, code, stats and more the public npm registry in style.
 Docker Container
 ============
 
-Running this on a container is as simple as the following:
+Running this on a container requires the following containers:
+
+* Redis: https://registry.hub.docker.com/\_/redis/
+
+Based on the documentation, you can start it with persistence and storing the data in a desired volume.
 
 ```
-$ docker run -t -i -p 8181:80 --link npm-registry:couchdb --link redis:redis --link npm-registry:private_npm marcellodesales/browse-npm
+docker run -d --name='redis' -v /app/npm-redis-volume:/data redis redis-server --appendonly yes
+```
+
+* NPM + CouchDB: https://registry.hub.docker.com/u/burkostya/npm-registry/
+
+This is running the NPM.org private registry, Kappa and CouchDB server. Again, you can just follow the
+documentation and set the Couchdb credentials, expose port numbers, etc. 
+
+```
+docker run --name='npm-registry' -i -t --rm -e 'COUCHDB_ADMIN_LOGIN=intuit' -e 'COUCHDB_ADMIN_PASSWORD=intuit' -p 5984:5984 -p 80:80 -v /app/npm-volume/:/var/lib/couchdb burkostya/npm-registry:2.5.5
+```
+
+Where the COUCHDB and volumen values are chosen randomly.
+
+This app can start and link to those containers using the following command:
+
+```
+$ docker run -t -i -p 8081:8081 --link npm-registry:couchdb --link redis:redis --link npm-registry:private_npm marcellodesales/browse-npm
 ```
 
 * couchdb: a running couchdb container running with the default ports
 * redis: a running redis container running with the default ports
-* private_npm: a running private npm container.
+* private\_npm: a running private npm container.
 
 ### Installation
 
